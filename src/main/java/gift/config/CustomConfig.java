@@ -31,6 +31,6 @@ public class CustomConfig implements WebMvcConfigurer {
         registry.addInterceptor(customAuthInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/api/members/register", "/api/members/login",
-                        "/admin/boards/**");
+                        "/admin/boards/**", "/kakao/login", "/");
     }
 }
