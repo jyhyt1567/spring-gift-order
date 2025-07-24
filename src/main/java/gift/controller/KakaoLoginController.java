@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping
 public class KakaoLoginController {
+
     private final KakaoLoginService kakaoLoginService;
 
     private final String url = "https://kauth.kakao.com/oauth/authorize?scope=talk_message&response_type=code&redirect_uri=http://localhost:8080&client_id=";
@@ -27,7 +28,7 @@ public class KakaoLoginController {
 
     @GetMapping("kakao/login")
     public ResponseEntity<Void> kakaoLogin() {
-        URI kakaoURL =URI.create(url + REST_API_KEY);
+        URI kakaoURL = URI.create(url + REST_API_KEY);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(kakaoURL)
                 .build();

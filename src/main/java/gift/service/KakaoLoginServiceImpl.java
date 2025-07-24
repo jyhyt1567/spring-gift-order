@@ -10,7 +10,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
 
 @Service
-public class KakaoLoginServiceImpl implements KakaoLoginService{
+public class KakaoLoginServiceImpl implements KakaoLoginService {
 
     private final RestClient client = RestClient.builder().build();
     private final String requestUrl = "https://kauth.kakao.com/oauth/token";
