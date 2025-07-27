@@ -3,6 +3,7 @@ package gift.interceptor;
 import gift.entity.Member;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
+import gift.service.KakaoLoginService;
 import gift.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,8 +16,11 @@ public class CustomAuthInterceptor implements HandlerInterceptor {
 
     private final TokenService tokenService;
 
-    public CustomAuthInterceptor(TokenService tokenService) {
+    private final KakaoLoginService kakaoLoginService;
+
+    public CustomAuthInterceptor(TokenService tokenService, KakaoLoginService kakaoLoginService) {
         this.tokenService = tokenService;
+        this.kakaoLoginService = kakaoLoginService;
     }
 
     @Override
@@ -29,7 +33,16 @@ public class CustomAuthInterceptor implements HandlerInterceptor {
             return true;
         }
         String token = request.getHeader("Authorization");
-        Member find = tokenService.isValidateToken(token);
+        Member find;
+        try{
+            find = kakaoLoginService.isValidateUser(token);
+        }catch (Exception e){
+            try {
+                find = tokenService.isValidateToken(token);
+            } catch (Exception e2) {
+                throw new CustomException(ErrorCode.NotRegisterd);
+            }
+        }
         request.setAttribute("login", find);
         return true;
     }

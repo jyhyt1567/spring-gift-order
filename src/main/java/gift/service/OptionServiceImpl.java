@@ -9,7 +9,6 @@ import gift.entity.Product;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
 import gift.repository.OptionRepository;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -61,15 +60,14 @@ public class OptionServiceImpl implements OptionService {
     @Override
     @Transactional
     public OptionResponseDto purchaseOption(
-            Long id,
             Long optionId,
-            PurchaseOptionRequestDto requestDto) {
-        Option option = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
-        if (requestDto.quantity() > option.getQuantity()) {
+            Long quantity) {
+        Option option = findOptionById(optionId);
+        if (quantity > option.getQuantity()) {
             throw new CustomException(ErrorCode.OptionNotEnough);
         }
-        option.changeQuantity(option.getQuantity() - requestDto.quantity());
-        Option updatedOption = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
+        option.changeQuantity(option.getQuantity() - quantity);
+        Option updatedOption = findOptionById(optionId);
         return new OptionResponseDto(updatedOption.getId(), updatedOption.getName(),
                 updatedOption.getQuantity());
     }
@@ -79,6 +77,12 @@ public class OptionServiceImpl implements OptionService {
     public void deleteOption(Long id, Long optionId) {
         findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
         optionRepository.deleteById(optionId);
+    }
+
+    @Override
+    public Option findOptionById(Long id) {
+        return optionRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.OptionNotFound));
     }
 
     private Option findOptionByProductIdAndOptionIdOrElseThrow(Long productId, Long optionId) {

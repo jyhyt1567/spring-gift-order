@@ -21,9 +21,10 @@ public interface OptionService {
             UpdateOptionQuantityRequestDto requestDto);
 
     OptionResponseDto purchaseOption(
-            Long id,
             Long optionId,
-            PurchaseOptionRequestDto requestDto);
+            Long quantity);
 
     void deleteOption(Long id, Long optionId);
+
+    Option findOptionById(Long id);
 }

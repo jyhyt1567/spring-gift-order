@@ -61,7 +61,8 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.deleteById(member.getId());
     }
 
-    private Member findMemberByEmailOrElseThrow(String email) {
+    @Override
+    public Member findMemberByEmailOrElseThrow(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.NotRegisterd));
     }
