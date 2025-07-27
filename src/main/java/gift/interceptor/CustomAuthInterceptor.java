@@ -32,6 +32,9 @@ public class CustomAuthInterceptor implements HandlerInterceptor {
             return true;
         }
         String token = request.getHeader("Authorization");
+        if (token == null) {
+            throw new CustomException(ErrorCode.NotLogin);
+        }
         Member find;
         try {
             find = kakaoService.isValidateUser(token);
