@@ -20,17 +20,13 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 
-    private final KakaoConnectClient kakaoConnectClient;
-
     public OrderServiceImpl(
             WishService wishService,
             OptionService optionService,
-            OrderRepository orderRepository,
-            KakaoConnectClient kakaoConnectClient) {
+            OrderRepository orderRepository) {
         this.wishService = wishService;
         this.optionService = optionService;
         this.orderRepository = orderRepository;
-        this.kakaoConnectClient = kakaoConnectClient;
     }
 
     @Override
