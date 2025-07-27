@@ -2,23 +2,18 @@ package gift.service;
 
 import gift.component.KakaoConnectClient;
 import gift.dto.KakaoAuthTokenResponseDto;
+import gift.dto.OrderResponseDto;
 import gift.entity.Member;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.client.RestClient;
 
 @Service
-public class KakaoLoginServiceImpl implements KakaoLoginService {
+public class KakaoServiceImpl implements KakaoService {
 
     private final KakaoConnectClient connectClient;
 
     private final MemberService memberService;
 
-    KakaoLoginServiceImpl(KakaoConnectClient connectClient, MemberService memberService) {
+    KakaoServiceImpl(KakaoConnectClient connectClient, MemberService memberService) {
         this.connectClient = connectClient;
         this.memberService = memberService;
     }
@@ -32,5 +27,10 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
     public Member isValidateUser(String token) {
         String email = connectClient.getEmail(token);
         return memberService.findMemberByEmailOrElseThrow(email);
+    }
+
+    @Override
+    public void sendMessage(OrderResponseDto responseDto, String token) {
+        connectClient.sendMessage(responseDto, token);
     }
 }

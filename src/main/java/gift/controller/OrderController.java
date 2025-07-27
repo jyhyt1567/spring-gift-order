@@ -1,10 +1,9 @@
 package gift.controller;
 
-import gift.annotation.LoginMember;
 import gift.dto.CreateOrderRequestDto;
 import gift.dto.OrderResponseDto;
 import gift.entity.Member;
-import gift.service.KakaoLoginService;
+import gift.service.KakaoService;
 import gift.service.OrderService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,11 +20,11 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    private final KakaoLoginService kakaoLoginService;
+    private final KakaoService kakaoService;
 
-    public OrderController(OrderService orderService, KakaoLoginService kakaoLoginService) {
+    public OrderController(OrderService orderService, KakaoService kakaoService) {
         this.orderService = orderService;
-        this.kakaoLoginService = kakaoLoginService;
+        this.kakaoService = kakaoService;
     }
 
     @PostMapping
@@ -33,9 +32,10 @@ public class OrderController {
             @Valid @RequestBody CreateOrderRequestDto requestDto,
             @RequestHeader("Authorization") String token
     ) {
-        Member member = kakaoLoginService.isValidateUser(token);
+        Member member = kakaoService.isValidateUser(token);
         Long memberId = member.getId();
         OrderResponseDto orderResponseDto = orderService.purchaseProduct(requestDto, memberId);
+        kakaoService.sendMessage(orderResponseDto, token);
         return new ResponseEntity<>(orderResponseDto, HttpStatus.CREATED);
     }
 

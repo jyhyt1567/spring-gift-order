@@ -3,11 +3,10 @@ package gift.interceptor;
 import gift.entity.Member;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
-import gift.service.KakaoLoginService;
+import gift.service.KakaoService;
 import gift.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -16,11 +15,11 @@ public class CustomAuthInterceptor implements HandlerInterceptor {
 
     private final TokenService tokenService;
 
-    private final KakaoLoginService kakaoLoginService;
+    private final KakaoService kakaoService;
 
-    public CustomAuthInterceptor(TokenService tokenService, KakaoLoginService kakaoLoginService) {
+    public CustomAuthInterceptor(TokenService tokenService, KakaoService kakaoService) {
         this.tokenService = tokenService;
-        this.kakaoLoginService = kakaoLoginService;
+        this.kakaoService = kakaoService;
     }
 
     @Override
@@ -35,7 +34,7 @@ public class CustomAuthInterceptor implements HandlerInterceptor {
         String token = request.getHeader("Authorization");
         Member find;
         try {
-            find = kakaoLoginService.isValidateUser(token);
+            find = kakaoService.isValidateUser(token);
         } catch (Exception e) {
             try {
                 find = tokenService.isValidateToken(token);

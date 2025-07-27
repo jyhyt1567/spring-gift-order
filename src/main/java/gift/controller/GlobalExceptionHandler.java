@@ -37,4 +37,12 @@ public class GlobalExceptionHandler {
                 "로그인 하지 않았습니다");
         return new ResponseEntity<>(customErrorResponse, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler
+    private ResponseEntity<CustomErrorResponse> hanbleException(
+            HttpClientErrorException e) {
+        CustomErrorResponse customErrorResponse = new CustomErrorResponse(HttpStatus.UNAUTHORIZED, "카카오 로그인을 해 주세요");
+        return new ResponseEntity<>(customErrorResponse, HttpStatus.UNAUTHORIZED);
+    }
+
 }

@@ -1,7 +1,12 @@
 package gift.component;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.KakaoAuthTokenResponseDto;
 import gift.dto.KakaoEmailResponseDto;
+import gift.dto.OrderResponseDto;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -54,5 +59,37 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
         KakaoEmailResponseDto result = response.getBody();
         return result.kakao_account().email();
         // todo 예외처리
+    }
+
+    @Override
+    public void sendMessage(OrderResponseDto responseDto, String token) {
+        String requestUrl = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
+
+        var body = new LinkedMultiValueMap<String, Object>();
+        String content =
+                "option id: " + responseDto.optionId() + "\nquantity: " + responseDto.quantity()
+                        + "\nmessage: " + responseDto.message() + "\ndate: "
+                        + responseDto.orderDateTime();
+        Map<String, Object> text = new HashMap<>();
+        text.put("object_type", "text");
+        text.put("text", content);
+        text.put("link", Map.of("web_url", "http://localhost:8080",
+                "mobile_web_url", "http://localhost:8080"));
+
+        String json = "";
+        try{
+            json = new ObjectMapper().writeValueAsString(text);
+        } catch (JsonProcessingException e) {
+            //throw new CustomException(ErrorCode.);
+        }
+        body.add("template_object", json);
+
+        ResponseEntity<Void> response = client.post()
+                .uri(requestUrl)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .header(HttpHeaders.AUTHORIZATION, token)
+                .body(body)
+                .retrieve()
+                .toBodilessEntity();
     }
 }
