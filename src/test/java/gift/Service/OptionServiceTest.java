@@ -75,7 +75,7 @@ public class OptionServiceTest {
         optionService.createOption(request, productId);
 
         CustomException e = Assertions.assertThrows(CustomException.class,
-                () -> optionService.purchaseOption(productId, option.getId(), requestDto));
+                () -> optionService.purchaseOption(option.getId(), requestDto.quantity()));
         assertThat(e.getErrorCode()).isEqualTo(ErrorCode.OptionNotFound);
     }
 }
