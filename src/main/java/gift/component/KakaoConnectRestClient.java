@@ -11,7 +11,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
 
 @Component
-public class KakaoConnectRestClient implements KakaoConnectClient{
+public class KakaoConnectRestClient implements KakaoConnectClient {
 
     private final RestClient client = RestClient.builder().build();
 

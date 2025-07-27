@@ -23,13 +23,13 @@ public class OrderController {
 
     private final KakaoLoginService kakaoLoginService;
 
-    public OrderController(OrderService orderService, KakaoLoginService kakaoLoginService){
+    public OrderController(OrderService orderService, KakaoLoginService kakaoLoginService) {
         this.orderService = orderService;
         this.kakaoLoginService = kakaoLoginService;
     }
 
     @PostMapping
-    public ResponseEntity<OrderResponseDto> orderProduct (
+    public ResponseEntity<OrderResponseDto> orderProduct(
             @Valid @RequestBody CreateOrderRequestDto requestDto,
             @RequestHeader("Authorization") String token
     ) {

@@ -1,6 +1,6 @@
 package gift.dto;
 
-public record KakaoEmailResponseDto (
+public record KakaoEmailResponseDto(
         KakaoAccount kakao_account
 ) {
 

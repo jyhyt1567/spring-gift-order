@@ -18,7 +18,7 @@ public class KakaoLoginServiceImpl implements KakaoLoginService {
 
     private final MemberService memberService;
 
-    KakaoLoginServiceImpl(KakaoConnectClient connectClient, MemberService memberService){
+    KakaoLoginServiceImpl(KakaoConnectClient connectClient, MemberService memberService) {
         this.connectClient = connectClient;
         this.memberService = memberService;
     }
