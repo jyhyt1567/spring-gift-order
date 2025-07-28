@@ -15,11 +15,8 @@ public class CustomAuthInterceptor implements HandlerInterceptor {
 
     private final TokenService tokenService;
 
-    private final KakaoService kakaoService;
-
-    public CustomAuthInterceptor(TokenService tokenService, KakaoService kakaoService) {
+    public CustomAuthInterceptor(TokenService tokenService) {
         this.tokenService = tokenService;
-        this.kakaoService = kakaoService;
     }
 
     @Override
@@ -32,19 +29,7 @@ public class CustomAuthInterceptor implements HandlerInterceptor {
             return true;
         }
         String token = request.getHeader("Authorization");
-        if (token == null) {
-            throw new CustomException(ErrorCode.NotLogin);
-        }
-        Member find;
-        try {
-            find = kakaoService.isValidateUser(token);
-        } catch (Exception e) {
-            try {
-                find = tokenService.isValidateToken(token);
-            } catch (Exception e2) {
-                throw new CustomException(ErrorCode.NotRegisterd);
-            }
-        }
+        Member find = tokenService.isValidateToken(token);
         request.setAttribute("login", find);
         return true;
     }

@@ -52,7 +52,7 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
         ResponseEntity<KakaoEmailResponseDto> response = client.post()
                 .uri(requestUrl)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(body)
                 .retrieve()
                 .toEntity(KakaoEmailResponseDto.class);
@@ -77,7 +77,7 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
                 "mobile_web_url", "http://localhost:8080"));
 
         String json = "";
-        try{
+        try {
             json = new ObjectMapper().writeValueAsString(text);
         } catch (JsonProcessingException e) {
             //throw new CustomException(ErrorCode.);
@@ -87,9 +87,27 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
         ResponseEntity<Void> response = client.post()
                 .uri(requestUrl)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(body)
                 .retrieve()
                 .toBodilessEntity();
+    }
+
+    @Override
+    public KakaoAuthTokenResponseDto renewalToken(String refreshToken) {
+        String requestUrl = "https://kauth.kakao.com/oauth/token";
+        var body = new LinkedMultiValueMap<String, String>();
+        body.add("grant_type", "refresh_token");
+        body.add("client_id", REST_API_KEY);
+        body.add("refresh_token", refreshToken);
+
+        ResponseEntity<KakaoAuthTokenResponseDto> response = client.post()
+                .uri(requestUrl)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                .body(body)
+                .retrieve()
+                .toEntity(KakaoAuthTokenResponseDto.class);
+        KakaoAuthTokenResponseDto result = response.getBody();
+        return result;
     }
 }

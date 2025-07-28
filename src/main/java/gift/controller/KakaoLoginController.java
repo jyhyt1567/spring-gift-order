@@ -1,6 +1,8 @@
 package gift.controller;
 
+import gift.annotation.LoginMember;
 import gift.dto.KakaoAuthTokenResponseDto;
+import gift.entity.Member;
 import gift.service.KakaoService;
 import java.net.URI;
 import org.springframework.beans.factory.annotation.Value;

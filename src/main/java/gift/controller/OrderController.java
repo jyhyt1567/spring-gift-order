@@ -1,7 +1,9 @@
 package gift.controller;
 
+import gift.annotation.LoginMember;
 import gift.dto.CreateOrderRequestDto;
 import gift.dto.OrderResponseDto;
+import gift.entity.KakaoAuth;
 import gift.entity.Member;
 import gift.service.KakaoService;
 import gift.service.OrderService;
@@ -30,12 +32,12 @@ public class OrderController {
     @PostMapping
     public ResponseEntity<OrderResponseDto> orderProduct(
             @Valid @RequestBody CreateOrderRequestDto requestDto,
-            @RequestHeader("Authorization") String token
+            @LoginMember Member member
     ) {
-        Member member = kakaoService.isValidateUser(token);
+        kakaoService.isValidateUser(member);
         Long memberId = member.getId();
         OrderResponseDto orderResponseDto = orderService.purchaseProduct(requestDto, memberId);
-        kakaoService.sendMessage(orderResponseDto, token);
+        kakaoService.sendMessage(orderResponseDto, member);
         return new ResponseEntity<>(orderResponseDto, HttpStatus.CREATED);
     }
 
