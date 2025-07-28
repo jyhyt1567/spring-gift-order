@@ -5,12 +5,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import gift.dto.KakaoAuthTokenResponseDto;
 import gift.dto.KakaoEmailResponseDto;
 import gift.dto.OrderResponseDto;
+import gift.exception.CustomException;
+import gift.exception.ErrorCode;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestClient;
@@ -18,8 +23,14 @@ import org.springframework.web.client.RestClient;
 @Component
 public class KakaoConnectRestClient implements KakaoConnectClient {
 
-    private final RestClient client = RestClient.builder().build();
+    private final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
+    private final RestClient client;
 
+    public KakaoConnectRestClient(){
+        requestFactory.setConnectTimeout(Duration.ofSeconds(2));
+        requestFactory.setReadTimeout(Duration.ofSeconds(3));
+        client = RestClient.builder().requestFactory(requestFactory).build();
+    }
     @Value("${REST_API_KEY}")
     private String REST_API_KEY;
 
@@ -55,10 +66,13 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(body)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        (req, res) -> {throw new CustomException(ErrorCode.KakaoAuthClientError);})
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        (req, res) -> {throw new CustomException(ErrorCode.KakaoAuthServerError);})
                 .toEntity(KakaoEmailResponseDto.class);
         KakaoEmailResponseDto result = response.getBody();
-        return result.kakao_account().email();
-        // todo 예외처리
+        return result.getEmail();
     }
 
     @Override
@@ -80,16 +94,20 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
         try {
             json = new ObjectMapper().writeValueAsString(text);
         } catch (JsonProcessingException e) {
-            //throw new CustomException(ErrorCode.);
+            throw new CustomException(ErrorCode.ParsingFailed);
         }
         body.add("template_object", json);
 
-        ResponseEntity<Void> response = client.post()
+        client.post()
                 .uri(requestUrl)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .body(body)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        (req, res) -> {throw new CustomException(ErrorCode.KakaoAuthClientError);})
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        (req, res) -> {throw new CustomException(ErrorCode.KakaoAuthServerError);})
                 .toBodilessEntity();
     }
 
@@ -106,8 +124,11 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED_VALUE)
                 .body(body)
                 .retrieve()
+                .onStatus(HttpStatusCode::is4xxClientError,
+                        (req, res) -> {throw new CustomException(ErrorCode.KakaoAuthClientError);})
+                .onStatus(HttpStatusCode::is5xxServerError,
+                        (req, res) -> {throw new CustomException(ErrorCode.KakaoAuthServerError);})
                 .toEntity(KakaoAuthTokenResponseDto.class);
-        KakaoAuthTokenResponseDto result = response.getBody();
-        return result;
+        return response.getBody();
     }
 }
