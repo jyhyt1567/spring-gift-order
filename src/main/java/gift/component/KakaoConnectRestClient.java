@@ -7,6 +7,7 @@ import gift.dto.KakaoEmailResponseDto;
 import gift.dto.OrderResponseDto;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
+import gift.properties.Properties;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,21 +26,21 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
 
     private final SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
     private final RestClient client;
+    private final Properties properties;
 
-    public KakaoConnectRestClient(){
+    public KakaoConnectRestClient(Properties properties){
         requestFactory.setConnectTimeout(Duration.ofSeconds(2));
         requestFactory.setReadTimeout(Duration.ofSeconds(3));
         client = RestClient.builder().requestFactory(requestFactory).build();
+        this.properties = properties;
     }
-    @Value("${REST_API_KEY}")
-    private String REST_API_KEY;
 
     @Override
     public KakaoAuthTokenResponseDto retrieveToken(String code) {
-        String requestUrl = "https://kauth.kakao.com/oauth/token";
+        String requestUrl = properties.getAuthUrl() + "/token";
         var body = new LinkedMultiValueMap<String, String>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", REST_API_KEY);
+        body.add("client_id", properties.getRestApiKey());
         body.add("redirect_uri", "http://localhost:8080");
         body.add("code", code);
 
@@ -55,7 +56,7 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
 
     @Override
     public String getEmail(String token) {
-        String requestUrl = "https://kapi.kakao.com/v2/user/me";
+        String requestUrl = properties.getApiUrl() + "/user/me";
 
         var body = new LinkedMultiValueMap<String, String>();
         body.add("property_keys", "[\"kakao_account.email\"]");
@@ -77,7 +78,7 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
 
     @Override
     public void sendMessage(OrderResponseDto responseDto, String token) {
-        String requestUrl = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
+        String requestUrl = properties.getApiUrl() + "/api/talk/memo/default/send";
 
         var body = new LinkedMultiValueMap<String, Object>();
         String content =
@@ -113,10 +114,10 @@ public class KakaoConnectRestClient implements KakaoConnectClient {
 
     @Override
     public KakaoAuthTokenResponseDto renewalToken(String refreshToken) {
-        String requestUrl = "https://kauth.kakao.com/oauth/token";
+        String requestUrl = properties.getAuthUrl() + "/token";
         var body = new LinkedMultiValueMap<String, String>();
         body.add("grant_type", "refresh_token");
-        body.add("client_id", REST_API_KEY);
+        body.add("client_id", properties.getRestApiKey());
         body.add("refresh_token", refreshToken);
 
         ResponseEntity<KakaoAuthTokenResponseDto> response = client.post()

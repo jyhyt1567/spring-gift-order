@@ -3,6 +3,7 @@ package gift.controller;
 import gift.annotation.LoginMember;
 import gift.dto.KakaoAuthTokenResponseDto;
 import gift.entity.Member;
+import gift.properties.Properties;
 import gift.service.KakaoService;
 import java.net.URI;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,18 +20,23 @@ public class KakaoLoginController {
 
     private final KakaoService kakaoService;
 
-    private final String url = "https://kauth.kakao.com/oauth/authorize?scope=talk_message&response_type=code&redirect_uri=http://localhost:8080&client_id=";
+    private final Properties properties;
 
-    @Value("${REST_API_KEY}")
-    private String REST_API_KEY;
+    private final String url;
 
-    public KakaoLoginController(KakaoService kakaoService) {
+    public KakaoLoginController(KakaoService kakaoService, Properties properties) {
         this.kakaoService = kakaoService;
+        this.properties = properties;
+        this.url = properties.getAuthUrl() +
+                "/authorize?scope=talk_message&response_type=code&redirect_uri="+
+                properties.getRedirectUri() +
+                "&client_id=" +
+                properties.getRestApiKey();
     }
 
     @GetMapping("kakao/login")
     public ResponseEntity<Void> kakaoLogin() {
-        URI kakaoURL = URI.create(url + REST_API_KEY);
+        URI kakaoURL = URI.create(url);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(kakaoURL)
                 .build();
