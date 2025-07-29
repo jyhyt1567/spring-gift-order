@@ -10,7 +10,6 @@ public interface KakaoService {
 
     KakaoAuthTokenResponseDto getKakaoToken(String code);
 
-    @Transactional
     KakaoAuthTokenResponseDto renewalKakaoToken(String refreshToken, Long memberId);
 
     void isValidateUser(Member member);
