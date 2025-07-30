@@ -49,7 +49,7 @@ public class OptionServiceImpl implements OptionService {
             Long optionId,
             UpdateOptionQuantityRequestDto requestDto) {
         Option option = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
-        option.decreaseQuantity(requestDto.quantity());
+        option.changeQuantity(requestDto.quantity());
         return new OptionResponseDto(option.getId(), option.getName(), option.getQuantity());
     }
 
