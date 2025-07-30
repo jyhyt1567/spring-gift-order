@@ -31,9 +31,9 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponseDto purchaseProduct(CreateOrderRequestDto requestDto, Long memberId) {
         Option option = optionService.purchaseOption(requestDto.optionId(), requestDto.quantity());
         Order order = new Order(option, requestDto.quantity(), requestDto.message());
-        orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
         wishService.deleteMemberWishByProductIdIfExist(option.getProductId(), memberId);
-        return new OrderResponseDto(order.getId(), option.getId(), order.getQuantity(),
-                order.getOrderDateTime(), order.getMessage());
+        return new OrderResponseDto(savedOrder.getId(), option.getId(), savedOrder.getQuantity(),
+                savedOrder.getOrderDateTime(), savedOrder.getMessage());
     }
 }

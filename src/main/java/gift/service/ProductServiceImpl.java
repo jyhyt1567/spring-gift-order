@@ -38,9 +38,9 @@ public class ProductServiceImpl implements ProductService {
             Option option = new Option(requestOptionDto.name(), requestOptionDto.quantity(), newProduct);
             newProduct.addOption(option);
         }
-        productRepository.save(newProduct);
-        return new ProductResponseDto(newProduct.getId(), newProduct.getName(),
-                newProduct.getPrice(), newProduct.getImageUrl());
+        Product savedProduct = productRepository.save(newProduct);
+        return new ProductResponseDto(savedProduct.getId(), savedProduct.getName(),
+                savedProduct.getPrice(), savedProduct.getImageUrl());
     }
 
     @Override

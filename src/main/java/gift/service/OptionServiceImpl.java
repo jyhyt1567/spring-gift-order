@@ -38,8 +38,8 @@ public class OptionServiceImpl implements OptionService {
         Option newOption = new Option(requestDto.name(), requestDto.quantity(), null);
         Product product = productService.findProductByIdOrElseThrow(productId);
         newOption.setProduct(product);
-        optionRepository.save(newOption);
-        return new OptionResponseDto(newOption.getId(), newOption.getName(), newOption.getQuantity());
+        Option savedOption = optionRepository.save(newOption);
+        return new OptionResponseDto(savedOption.getId(), savedOption.getName(), savedOption.getQuantity());
     }
 
     @Override
