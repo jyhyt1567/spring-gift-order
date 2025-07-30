@@ -74,6 +74,10 @@ public class Option {
         this.quantity = this.quantity - orderQuantity;
     }
 
+    public void changeQuantity(Long quantity) {
+        this.quantity = quantity;
+    }
+
     public Boolean isQuantityEnough(Long orderQuantity) {
         return this.quantity - orderQuantity >= 0;
     }

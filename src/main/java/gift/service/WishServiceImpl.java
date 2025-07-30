@@ -73,14 +73,13 @@ public class WishServiceImpl implements WishService {
             Long memberId) {
         Wish wish = findMemberWishByProductIdOrElseThrow(productId, memberId);
         wish.changeQuantity(quantity);
-        Wish updated = findMemberWishByProductIdOrElseThrow(productId, memberId);
-        Product product = updated.getProduct();
+        Product product = wish.getProduct();
         ProductResponseDto productResponseDto = new ProductResponseDto(
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
                 product.getImageUrl());
-        return new WishResponseDto(productResponseDto, updated.getQuantity());
+        return new WishResponseDto(productResponseDto, wish.getQuantity());
     }
 
     @Override

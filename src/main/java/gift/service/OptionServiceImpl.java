@@ -38,9 +38,8 @@ public class OptionServiceImpl implements OptionService {
         Option newOption = new Option(requestDto.name(), requestDto.quantity(), null);
         Product product = productService.findProductByIdOrElseThrow(productId);
         newOption.setProduct(product);
-        Option savedOption = optionRepository.save(newOption);
-        return new OptionResponseDto(savedOption.getId(), savedOption.getName(),
-                savedOption.getQuantity());
+        optionRepository.save(newOption);
+        return new OptionResponseDto(newOption.getId(), newOption.getName(), newOption.getQuantity());
     }
 
     @Override
@@ -51,9 +50,7 @@ public class OptionServiceImpl implements OptionService {
             UpdateOptionQuantityRequestDto requestDto) {
         Option option = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
         option.decreaseQuantity(requestDto.quantity());
-        Option updatedOption = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
-        return new OptionResponseDto(updatedOption.getId(), updatedOption.getName(),
-                updatedOption.getQuantity());
+        return new OptionResponseDto(option.getId(), option.getName(), option.getQuantity());
     }
 
     @Override
@@ -63,9 +60,7 @@ public class OptionServiceImpl implements OptionService {
             Long quantity) {
         Option option = findOptionByIdOrElseThrow(optionId);
         option.decreaseQuantity(quantity);
-        Option updatedOption = findOptionByIdOrElseThrow(optionId);
-        return new OptionResponseDto(updatedOption.getId(), updatedOption.getName(),
-                updatedOption.getQuantity());
+        return new OptionResponseDto(option.getId(), option.getName(), option.getQuantity());
     }
 
     @Override

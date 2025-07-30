@@ -38,9 +38,9 @@ public class ProductServiceImpl implements ProductService {
             Option option = new Option(requestOptionDto.name(), requestOptionDto.quantity(), newProduct);
             newProduct.addOption(option);
         }
-        Product savedProduct = productRepository.save(newProduct);
-        return new ProductResponseDto(savedProduct.getId(), savedProduct.getName(),
-                savedProduct.getPrice(), savedProduct.getImageUrl());
+        productRepository.save(newProduct);
+        return new ProductResponseDto(newProduct.getId(), newProduct.getName(),
+                newProduct.getPrice(), newProduct.getImageUrl());
     }
 
     @Override
@@ -53,7 +53,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto findProductById(Long id) {
         Product product = findProductByIdOrElseThrow(id);
-
         return new ProductResponseDto(product.getId(), product.getName(),
                 product.getPrice(), product.getImageUrl());
     }
@@ -65,9 +64,7 @@ public class ProductServiceImpl implements ProductService {
         product.changeName(requestDto.name());
         product.changePrice(requestDto.price());
         product.changeImageUrl(requestDto.imageUrl());
-        Product updated = findProductByIdOrElseThrow(id);
-        return new ProductResponseDto(updated.getId(), updated.getName(), updated.getPrice(),
-                updated.getImageUrl());
+        return new ProductResponseDto(product.getId(), product.getName(), product.getPrice(), product.getImageUrl());
     }
 
     @Override
