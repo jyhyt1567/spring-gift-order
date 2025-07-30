@@ -90,7 +90,7 @@ public class KakaoServiceTest {
         given(kakaoAuthRepository.findById(memberId)).willReturn(Optional.of(kakaoAuth));
         given(connectClient.getEmail(accessToken)).willReturn(email);
 
-        kakaoService.isValidateUser(member);
+        kakaoService.verifyKakaoAccountEmail(member);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class KakaoServiceTest {
                 new KakaoAuthTokenResponseDto("bearer", "new access token", "new refresh token");
         given(connectClient.renewalToken(refreshToken)).willReturn(responseDto);
         given(connectClient.getEmail(responseDto.access_token())).willReturn(email);
-        kakaoService.isValidateUser(member);
+        kakaoService.verifyKakaoAccountEmail(member);
         assertAll(
                 () -> AssertionsForClassTypes.assertThat(kakaoAuth.getAccessToken()).isEqualTo(responseDto.access_token()),
                 () -> AssertionsForClassTypes.assertThat(kakaoAuth.getRefreshToken()).isEqualTo(responseDto.refresh_token())
@@ -116,7 +116,7 @@ public class KakaoServiceTest {
         given(connectClient.getEmail(accessToken)).willReturn("other@asd.asd");
 
         CustomException e = Assertions.assertThrows(CustomException.class,
-                () -> kakaoService.isValidateUser(member));
+                () -> kakaoService.verifyKakaoAccountEmail(member));
         assertThat(e.getErrorCode()).isEqualTo(ErrorCode.LoginAnotherAccount);
     }
 }

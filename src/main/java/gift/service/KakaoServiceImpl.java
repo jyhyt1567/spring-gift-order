@@ -51,7 +51,7 @@ public class KakaoServiceImpl implements KakaoService {
     }
 
     @Override
-    public void isValidateUser(Member member) {
+    public void verifyKakaoAccountEmail(Member member) {
         String email;
         String memberEmail = member.getEmail();
         KakaoAuth kakaoAuth = findKakaoAuthByIdOrElseThrow(member.getId());
@@ -68,7 +68,7 @@ public class KakaoServiceImpl implements KakaoService {
 
     @Override
     public void sendMessage(OrderResponseDto responseDto, Member member) {
-        isValidateUser(member);
+        verifyKakaoAccountEmail(member);
         KakaoAuth kakaoAuth = findKakaoAuthByIdOrElseThrow(member.getId());
         connectClient.sendMessage(responseDto, kakaoAuth.getAccessToken());
     }
