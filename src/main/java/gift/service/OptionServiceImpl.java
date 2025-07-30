@@ -55,12 +55,10 @@ public class OptionServiceImpl implements OptionService {
 
     @Override
     @Transactional
-    public OptionResponseDto purchaseOption(
-            Long optionId,
-            Long quantity) {
+    public Option purchaseOption(Long optionId, Long quantity) {
         Option option = findOptionByIdOrElseThrow(optionId);
         option.decreaseQuantity(quantity);
-        return new OptionResponseDto(option.getId(), option.getName(), option.getQuantity());
+        return option;
     }
 
     @Override

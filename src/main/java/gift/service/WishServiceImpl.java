@@ -90,6 +90,15 @@ public class WishServiceImpl implements WishService {
     }
 
     @Override
+    @Transactional
+    public void deleteMemberWishByProductIdIfExist(Long productId, Long memberId) {
+        Optional<Wish> wish = wishRepository.findByProduct_IdAndMember_Id(productId, memberId);
+        if (wish.isPresent()) {
+            wishRepository.deleteByProduct_IdAndMember_Id(productId, memberId);
+        }
+    }
+
+    @Override
     public Optional<Wish> findMemberWishByProductId(Long productId, Long memberId) {
         return wishRepository.findByProduct_IdAndMember_Id(productId, memberId);
     }

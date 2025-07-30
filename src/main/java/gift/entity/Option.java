@@ -67,8 +67,12 @@ public class Option {
         product.addOption(this);
     }
 
+    public Long getProductId() {
+        return product.getId();
+    }
+
     public void decreaseQuantity(Long orderQuantity) {
-        if (!isQuantityEnough(orderQuantity)){
+        if (!isQuantityEnough(orderQuantity)) {
             throw new CustomException(ErrorCode.OptionNotEnough);
         }
         this.quantity = this.quantity - orderQuantity;
