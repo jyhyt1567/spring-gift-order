@@ -2,7 +2,6 @@ package gift.service;
 
 import gift.dto.CreateOptionRequestDto;
 import gift.dto.OptionResponseDto;
-import gift.dto.PurchaseOptionRequestDto;
 import gift.dto.UpdateOptionQuantityRequestDto;
 import gift.entity.Option;
 import gift.entity.Product;
@@ -62,12 +61,12 @@ public class OptionServiceImpl implements OptionService {
     public OptionResponseDto purchaseOption(
             Long optionId,
             Long quantity) {
-        Option option = findOptionById(optionId);
+        Option option = findOptionByIdOrElseThrow(optionId);
         if (quantity > option.getQuantity()) {
             throw new CustomException(ErrorCode.OptionNotEnough);
         }
         option.changeQuantity(option.getQuantity() - quantity);
-        Option updatedOption = findOptionById(optionId);
+        Option updatedOption = findOptionByIdOrElseThrow(optionId);
         return new OptionResponseDto(updatedOption.getId(), updatedOption.getName(),
                 updatedOption.getQuantity());
     }
@@ -80,7 +79,7 @@ public class OptionServiceImpl implements OptionService {
     }
 
     @Override
-    public Option findOptionById(Long id) {
+    public Option findOptionByIdOrElseThrow(Long id) {
         return optionRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ErrorCode.OptionNotFound));
     }

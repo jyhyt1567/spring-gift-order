@@ -52,7 +52,7 @@ public class OrderServiceTest {
     void 구매_성공_테스트() {
         CreateOrderRequestDto requestDto = new CreateOrderRequestDto(option.getId(), 2L, message);
         Order order = new Order(1L, option, requestDto.quantity(),message);
-        given(optionService.findOptionById(option.getId())).willReturn(option);
+        given(optionService.findOptionByIdOrElseThrow(option.getId())).willReturn(option);
         given(optionService.purchaseOption(option.getId(), requestDto.quantity()))
                 .willReturn(new OptionResponseDto(
                         option.getId(),
@@ -76,7 +76,7 @@ public class OrderServiceTest {
     @DisplayName("옵션 수량 부족 시 구매 실패 테스트")
     void 수량_부족_구매_실패_테스트() {
         CreateOrderRequestDto requestDto = new CreateOrderRequestDto(option.getId(), 9999L, message);
-        given(optionService.findOptionById(option.getId())).willReturn(option);
+        given(optionService.findOptionByIdOrElseThrow(option.getId())).willReturn(option);
         given(optionService.purchaseOption(option.getId(), requestDto.quantity()))
                 .willThrow(new CustomException(ErrorCode.OptionNotEnough));
 
@@ -89,7 +89,7 @@ public class OrderServiceTest {
     @DisplayName("없는 옵션 구매 시 구매 실패 테스트")
     void 없는_옵션_구매_실패_테스트() {
         CreateOrderRequestDto requestDto = new CreateOrderRequestDto(999L, 2L, message);
-        given(optionService.findOptionById(999L))
+        given(optionService.findOptionByIdOrElseThrow(999L))
                 .willThrow(new CustomException(ErrorCode.OptionNotFound));
         CustomException e = Assertions.assertThrows(CustomException.class,
                 () -> orderService.purchaseProduct(requestDto, memberId));

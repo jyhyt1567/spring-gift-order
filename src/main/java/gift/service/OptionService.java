@@ -2,12 +2,9 @@ package gift.service;
 
 import gift.dto.CreateOptionRequestDto;
 import gift.dto.OptionResponseDto;
-import gift.dto.PurchaseOptionRequestDto;
 import gift.dto.UpdateOptionQuantityRequestDto;
 import gift.entity.Option;
-import jakarta.validation.Valid;
 import java.util.List;
-import org.springframework.transaction.annotation.Transactional;
 
 public interface OptionService {
 
@@ -26,5 +23,5 @@ public interface OptionService {
 
     void deleteOption(Long id, Long optionId);
 
-    Option findOptionById(Long id);
+    Option findOptionByIdOrElseThrow(Long id);
 }
