@@ -45,3 +45,9 @@
       - ![img_5.png](img_5.png)
       - Response: `401 Unauthorized`
       - ![img_7.png](img_7.png)
+
+# step 2 피드백 반영
+- 메서드 네이밍 변경
+- 옵션 수량에 대한 책임을 옵션 엔티티로 이동
+- 메서드 중복 호출 제거
+- optionService, orderService, wishService 간 책임 변경
