@@ -50,7 +50,7 @@ public class OptionServiceImpl implements OptionService {
             Long optionId,
             UpdateOptionQuantityRequestDto requestDto) {
         Option option = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
-        option.changeQuantity(requestDto.quantity());
+        option.decreaseQuantity(requestDto.quantity());
         Option updatedOption = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
         return new OptionResponseDto(updatedOption.getId(), updatedOption.getName(),
                 updatedOption.getQuantity());
@@ -62,10 +62,7 @@ public class OptionServiceImpl implements OptionService {
             Long optionId,
             Long quantity) {
         Option option = findOptionByIdOrElseThrow(optionId);
-        if (quantity > option.getQuantity()) {
-            throw new CustomException(ErrorCode.OptionNotEnough);
-        }
-        option.changeQuantity(option.getQuantity() - quantity);
+        option.decreaseQuantity(quantity);
         Option updatedOption = findOptionByIdOrElseThrow(optionId);
         return new OptionResponseDto(updatedOption.getId(), updatedOption.getName(),
                 updatedOption.getQuantity());
