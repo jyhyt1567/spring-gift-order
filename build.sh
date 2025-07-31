@@ -16,7 +16,7 @@ fi
 cd "$PROJECT_PATH"
 ./gradlew clean build -x test
 
-DEPLOY_JAR=$(ls -t "$BUILD_PATH"/*.jar)
+DEPLOY_JAR=$(ls -t "$BUILD_PATH"/*.jar | grep -v -- '-plain.jar')
 cp "$DEPLOY_JAR" "$DEPLOY_PATH/"
 cd "$DEPLOY_PATH"
 
