@@ -2,14 +2,12 @@ package gift.service;
 
 import gift.dto.CreateOptionRequestDto;
 import gift.dto.OptionResponseDto;
-import gift.dto.PurchaseOptionRequestDto;
 import gift.dto.UpdateOptionQuantityRequestDto;
 import gift.entity.Option;
 import gift.entity.Product;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
 import gift.repository.OptionRepository;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -41,8 +39,7 @@ public class OptionServiceImpl implements OptionService {
         Product product = productService.findProductByIdOrElseThrow(productId);
         newOption.setProduct(product);
         Option savedOption = optionRepository.save(newOption);
-        return new OptionResponseDto(savedOption.getId(), savedOption.getName(),
-                savedOption.getQuantity());
+        return new OptionResponseDto(savedOption.getId(), savedOption.getName(), savedOption.getQuantity());
     }
 
     @Override
@@ -53,25 +50,15 @@ public class OptionServiceImpl implements OptionService {
             UpdateOptionQuantityRequestDto requestDto) {
         Option option = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
         option.changeQuantity(requestDto.quantity());
-        Option updatedOption = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
-        return new OptionResponseDto(updatedOption.getId(), updatedOption.getName(),
-                updatedOption.getQuantity());
+        return new OptionResponseDto(option.getId(), option.getName(), option.getQuantity());
     }
 
     @Override
     @Transactional
-    public OptionResponseDto purchaseOption(
-            Long id,
-            Long optionId,
-            PurchaseOptionRequestDto requestDto) {
-        Option option = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
-        if (requestDto.quantity() > option.getQuantity()) {
-            throw new CustomException(ErrorCode.OptionNotEnough);
-        }
-        option.changeQuantity(option.getQuantity() - requestDto.quantity());
-        Option updatedOption = findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
-        return new OptionResponseDto(updatedOption.getId(), updatedOption.getName(),
-                updatedOption.getQuantity());
+    public Option purchaseOption(Long optionId, Long quantity) {
+        Option option = findOptionByIdOrElseThrow(optionId);
+        option.decreaseQuantity(quantity);
+        return option;
     }
 
     @Override
@@ -79,6 +66,12 @@ public class OptionServiceImpl implements OptionService {
     public void deleteOption(Long id, Long optionId) {
         findOptionByProductIdAndOptionIdOrElseThrow(id, optionId);
         optionRepository.deleteById(optionId);
+    }
+
+    @Override
+    public Option findOptionByIdOrElseThrow(Long id) {
+        return optionRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ErrorCode.OptionNotFound));
     }
 
     private Option findOptionByProductIdAndOptionIdOrElseThrow(Long productId, Long optionId) {

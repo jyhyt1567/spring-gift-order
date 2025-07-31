@@ -1,5 +1,7 @@
 package gift.entity;
 
+import gift.exception.CustomException;
+import gift.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -65,7 +67,22 @@ public class Option {
         product.addOption(this);
     }
 
+    public Long getProductId() {
+        return product.getId();
+    }
+
+    public void decreaseQuantity(Long orderQuantity) {
+        if (!isQuantityEnough(orderQuantity)) {
+            throw new CustomException(ErrorCode.OptionNotEnough);
+        }
+        this.quantity = this.quantity - orderQuantity;
+    }
+
     public void changeQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    public Boolean isQuantityEnough(Long orderQuantity) {
+        return this.quantity - orderQuantity >= 0;
     }
 }

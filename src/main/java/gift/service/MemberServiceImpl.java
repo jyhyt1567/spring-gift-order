@@ -28,17 +28,15 @@ public class MemberServiceImpl implements MemberService {
     public JWTResponseDto createMember(CreateMemberRequestDto requestDto) {
         throwIfMemberFindByEmail(requestDto.email());
         Member newMember = new Member(requestDto.email(), requestDto.password(), "user");
-        Member savedMember = memberRepository.save(newMember);
-        String accessToken = tokenService.createAccessToken(savedMember);
+        memberRepository.save(newMember);
+        String accessToken = tokenService.createAccessToken(newMember);
         return new JWTResponseDto(accessToken);
     }
 
     @Override
     public JWTResponseDto loginMember(CreateMemberRequestDto requestDto) {
         Member member = findMemberByEmailOrElseThrow(requestDto.email());
-
         throwIfPasswordIncorrect(member, requestDto.password());
-
         String accessToken = tokenService.createAccessToken(member);
         return new JWTResponseDto(accessToken);
     }
@@ -55,13 +53,12 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void deleteMember(DeleteMemberRequestDto requestDto) {
         Member member = findMemberByEmailOrElseThrow(requestDto.email());
-
         throwIfPasswordIncorrect(member, requestDto.password());
-
         memberRepository.deleteById(member.getId());
     }
 
-    private Member findMemberByEmailOrElseThrow(String email) {
+    @Override
+    public Member findMemberByEmailOrElseThrow(String email) {
         return memberRepository.findByEmail(email)
                 .orElseThrow(() -> new CustomException(ErrorCode.NotRegisterd));
     }

@@ -14,7 +14,12 @@ public enum ErrorCode {
     AlreadyExistOptionName(HttpStatus.BAD_REQUEST, "중복된 옵션은 추가할 수 없습니다"),
     NamingForbidden(HttpStatus.FORBIDDEN, "'카카오'가 포함된 문구는 담당 MD와 협의한 경우에만 사용할 수 있습니다"),
     OptionNotFound(HttpStatus.NOT_FOUND, "없는 옵션입니다"),
-    OptionNotEnough(HttpStatus.FORBIDDEN, "선택한 옵션의 수량이 부족합니다");
+    OptionNotEnough(HttpStatus.FORBIDDEN, "선택한 옵션의 수량이 부족합니다"),
+    NotKakaoLogined(HttpStatus.FORBIDDEN, "주문하려면 카카오 로그인이 필요합니다, /kakao/login 에서 로그인 진행해 주세요"),
+    LoginAnotherAccount(HttpStatus.FORBIDDEN, "카카오 계정 이메일과 현재 로그인한 이메일이 다릅니다"),
+    ParsingFailed(HttpStatus.INTERNAL_SERVER_ERROR, "json 파싱에 실패했습니다"),
+    KakaoAuthClientError(HttpStatus.BAD_REQUEST, "카카오 서버와 통신에 문제가 있습니다"),
+    KakaoAuthServerError(HttpStatus.INTERNAL_SERVER_ERROR, "카카오 서버에 문제가 있습니다 나중에 다시 시도해주세요");
 
     private final HttpStatus status;
     private final String message;

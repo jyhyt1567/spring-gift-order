@@ -1,7 +1,10 @@
 package gift.controller;
 
+import gift.annotation.LoginMember;
 import gift.dto.KakaoAuthTokenResponseDto;
-import gift.service.KakaoLoginService;
+import gift.entity.Member;
+import gift.properties.Properties;
+import gift.service.KakaoService;
 import java.net.URI;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -15,20 +18,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping
 public class KakaoLoginController {
 
-    private final KakaoLoginService kakaoLoginService;
+    private final KakaoService kakaoService;
 
-    private final String url = "https://kauth.kakao.com/oauth/authorize?scope=talk_message&response_type=code&redirect_uri=http://localhost:8080&client_id=";
+    private final Properties properties;
 
-    @Value("${REST_API_KEY}")
-    private String REST_API_KEY;
+    private final String url;
 
-    public KakaoLoginController(KakaoLoginService kakaoLoginService) {
-        this.kakaoLoginService = kakaoLoginService;
+    public KakaoLoginController(KakaoService kakaoService, Properties properties) {
+        this.kakaoService = kakaoService;
+        this.properties = properties;
+        this.url = properties.getAuthUrl() +
+                "/authorize?scope=talk_message&response_type=code&redirect_uri="+
+                properties.getRedirectUri() +
+                "&client_id=" +
+                properties.getRestApiKey();
     }
 
     @GetMapping("kakao/login")
     public ResponseEntity<Void> kakaoLogin() {
-        URI kakaoURL = URI.create(url + REST_API_KEY);
+        URI kakaoURL = URI.create(url);
         return ResponseEntity.status(HttpStatus.FOUND)
                 .location(kakaoURL)
                 .build();
@@ -38,6 +46,6 @@ public class KakaoLoginController {
     public ResponseEntity<KakaoAuthTokenResponseDto> getKakaoToken(
             @RequestParam String code
     ) {
-        return new ResponseEntity<>(kakaoLoginService.getKakaoToken(code), HttpStatus.OK);
+        return new ResponseEntity<>(kakaoService.getKakaoToken(code), HttpStatus.OK);
     }
 }

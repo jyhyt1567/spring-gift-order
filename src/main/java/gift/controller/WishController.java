@@ -8,8 +8,6 @@ import gift.dto.WishResponseDto;
 import gift.entity.Member;
 import gift.service.WishService;
 import jakarta.validation.Valid;
-import java.util.List;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
@@ -59,7 +57,7 @@ public class WishController {
             @LoginMember Member member) {
         Long memberId = member.getId();
         if (requestDto.quantity().equals(0L)) {
-            wishService.deleteMemberWishByProductId(productId, memberId);
+            wishService.deleteMemberWishByProductIdIfExist(productId, memberId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 

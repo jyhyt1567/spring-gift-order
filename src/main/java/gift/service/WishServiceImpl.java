@@ -9,14 +9,11 @@ import gift.entity.Product;
 import gift.entity.Wish;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
-import gift.misc.Pair;
 import gift.repository.MemberRepository;
 import gift.repository.ProductRepository;
 import gift.repository.WishRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -76,14 +73,13 @@ public class WishServiceImpl implements WishService {
             Long memberId) {
         Wish wish = findMemberWishByProductIdOrElseThrow(productId, memberId);
         wish.changeQuantity(quantity);
-        Wish updated = findMemberWishByProductIdOrElseThrow(productId, memberId);
-        Product product = updated.getProduct();
+        Product product = wish.getProduct();
         ProductResponseDto productResponseDto = new ProductResponseDto(
                 product.getId(),
                 product.getName(),
                 product.getPrice(),
                 product.getImageUrl());
-        return new WishResponseDto(productResponseDto, updated.getQuantity());
+        return new WishResponseDto(productResponseDto, wish.getQuantity());
     }
 
     @Override
@@ -91,6 +87,20 @@ public class WishServiceImpl implements WishService {
     public void deleteMemberWishByProductId(Long productId, Long memberId) {
         findMemberWishByProductIdOrElseThrow(productId, memberId);
         wishRepository.deleteByProduct_IdAndMember_Id(productId, memberId);
+    }
+
+    @Override
+    @Transactional
+    public void deleteMemberWishByProductIdIfExist(Long productId, Long memberId) {
+        Optional<Wish> wish = wishRepository.findByProduct_IdAndMember_Id(productId, memberId);
+        if (wish.isPresent()) {
+            wishRepository.deleteByProduct_IdAndMember_Id(productId, memberId);
+        }
+    }
+
+    @Override
+    public Optional<Wish> findMemberWishByProductId(Long productId, Long memberId) {
+        return wishRepository.findByProduct_IdAndMember_Id(productId, memberId);
     }
 
     private void checkDuplicateWish(Long productId, Long memberId) {

@@ -4,6 +4,7 @@ import gift.dto.CreateMemberRequestDto;
 import gift.dto.DeleteMemberRequestDto;
 import gift.dto.JWTResponseDto;
 import gift.dto.UpdateMemberPasswordRequestDto;
+import gift.entity.Member;
 
 public interface MemberService {
 
@@ -14,4 +15,6 @@ public interface MemberService {
     void updateMemberPassword(UpdateMemberPasswordRequestDto requestDto);
 
     void deleteMember(DeleteMemberRequestDto requestDto);
+
+    Member findMemberByEmailOrElseThrow(String email);
 }

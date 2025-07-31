@@ -18,6 +18,8 @@ insert into members(email, password, role) values('testUser1@asdasd.asd', 'asd',
 
 insert into members(email, password, role) values('testUser3@asdasd.asd', 'asd', 'user');
 
+insert into members(email, password, role) values('jyhyt1567@naver.com', 'asd', 'user');
+
 insert into wishes(product_id, member_id, quantity) values(1,1,5);
 
 insert into wishes(product_id, member_id, quantity) values(2,1,6);

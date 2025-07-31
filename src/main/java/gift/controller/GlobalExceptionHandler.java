@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -36,4 +37,12 @@ public class GlobalExceptionHandler {
                 "로그인 하지 않았습니다");
         return new ResponseEntity<>(customErrorResponse, HttpStatus.UNAUTHORIZED);
     }
+
+//    @ExceptionHandler
+//    private ResponseEntity<CustomErrorResponse> hanbleException(
+//            HttpClientErrorException e) {
+//        CustomErrorResponse customErrorResponse = new CustomErrorResponse(HttpStatus.UNAUTHORIZED, "카카오 로그인을 해 주세요");
+//        return new ResponseEntity<>(customErrorResponse, HttpStatus.UNAUTHORIZED);
+//    }
+
 }

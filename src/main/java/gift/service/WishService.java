@@ -4,9 +4,10 @@ import gift.dto.CreateWishRequestDto;
 import gift.dto.WishPageDto;
 import gift.dto.WishResponseDto;
 
-import java.util.List;
-import org.springframework.data.domain.Page;
+import gift.entity.Wish;
+import java.util.Optional;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface WishService {
 
@@ -18,4 +19,8 @@ public interface WishService {
             Long memberId);
 
     void deleteMemberWishByProductId(Long productId, Long memberId);
+
+    void deleteMemberWishByProductIdIfExist(Long productId, Long memberId);
+
+    Optional<Wish> findMemberWishByProductId(Long productId, Long memberId);
 }

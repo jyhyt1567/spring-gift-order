@@ -3,10 +3,10 @@ package gift.interceptor;
 import gift.entity.Member;
 import gift.exception.CustomException;
 import gift.exception.ErrorCode;
+import gift.service.KakaoService;
 import gift.service.TokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.Optional;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 

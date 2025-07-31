@@ -8,7 +8,8 @@ public record ProductPageDto(
         int pageNum,
         int totalPageNum
 ) {
-    public ProductPageDto(Page<ProductResponseDto> page){
+
+    public ProductPageDto(Page<ProductResponseDto> page) {
         this(page.getContent(), page.getNumber(), page.getTotalPages());
     }
 }
