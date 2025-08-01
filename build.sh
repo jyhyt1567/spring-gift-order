@@ -20,4 +20,4 @@ DEPLOY_JAR=$(ls -t "$BUILD_PATH"/*.jar | grep -v -- '-plain.jar')
 cp "$DEPLOY_JAR" "$DEPLOY_PATH/"
 cd "$DEPLOY_PATH"
 
-nohup java -jar $(basename "$DEPLOY_JAR") > /dev/null 2> /dev/null < /dev/null &
+nohup java -Dspring.profiles.active=prod -jar $(basename "$DEPLOY_JAR") > /dev/null 2> /dev/null < /dev/null &
