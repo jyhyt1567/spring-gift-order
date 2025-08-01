@@ -44,7 +44,8 @@ public class CustomConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(properties.getCorsAllowedOrigin())
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowCredentials(true)
                 .exposedHeaders(HttpHeaders.LOCATION);
     }
 }
